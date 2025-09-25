@@ -1,0 +1,24 @@
+class Spreadsheet {
+public:
+    Spreadsheet(int rows) {}
+    unordered_map<string, int> tablero;
+    void setCell(string cell, int value) {
+        tablero[cell] = value;
+    }
+    void resetCell(string cell) {
+        tablero[cell] = 0;
+    }
+    int getValue(string formula) {
+        formula = formula.substr(1);
+        for(int i = 0; i < formula.size(); i++) {
+            if(formula[i] == '+') {
+                string temp1 = formula.substr(0,i);
+                string temp2 = formula.substr(i+1);
+                int left = (temp1[0] >= 'A' && temp1[0] <= 'Z') ? tablero[temp1] : stoi(temp1);
+                int right = (temp2[0] >= 'A' && temp2[0] <= 'Z') ? tablero[temp2] : stoi(temp2);
+                return left + right;
+            }
+        }
+        return 0;
+    }
+};
