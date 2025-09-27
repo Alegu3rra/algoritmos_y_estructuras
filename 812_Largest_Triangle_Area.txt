@@ -1,0 +1,38 @@
+class Solution {
+public:
+    double maxArea=0;
+    double largestTriangleArea(vector<vector<int>>& points) {
+        vector<vector<int>> comb;
+        fnCompleta(points,0,comb);
+        return maxArea;
+    }
+    double fnSemiperimetro(double a, double b, double c){
+        return (a+b+c)/2.0;
+    }
+    double fnHeron(double a, double b, double c){
+        double s = fnSemiperimetro(a,b,c);
+        return sqrt(s*(s-a)*(s-b)*(s-c));
+    }
+    double fnSide(vector<int>& pointa, vector<int>& pointb){
+        return sqrt(pow(pointb[0]-pointa[0],2) + pow(pointb[1]-pointa[1],2));
+    }
+    void fnCompleta(vector<vector<int>>& points, int i, vector<vector<int>>& comb){
+        if(comb.size() == 3){
+            
+            double localArea = fnHeron(
+                fnSide(comb[0], comb[1]), 
+                fnSide(comb[1], comb[2]), 
+                fnSide(comb[2], comb[0])
+            );
+            maxArea = max(maxArea, localArea);
+            return ;
+        }
+        if(i == points.size()){
+            return ;
+        }
+        fnCompleta(points, i+1, comb);
+        comb.push_back(points[i]);
+        fnCompleta(points, i+1, comb);
+        comb.pop_back();
+    }
+};
