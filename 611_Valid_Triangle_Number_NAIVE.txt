@@ -1,0 +1,27 @@
+class Solution {
+public:
+    int triangleNumber(vector<int>& nums) {
+        vector<int> comb;
+        return fnComplSearch(nums, comb, 0);
+    }
+
+    int fnIsTriangle(vector<int>& comb) {
+        return (comb[0] + comb[1] > comb[2] &&
+        comb[0] + comb[2] > comb[1] &&
+        comb[1] + comb[2] > comb[0]);
+    }
+
+    int fnComplSearch(vector<int>& nums, vector<int>& comb, int i){
+        if(i == nums.size()) {
+            if(comb.size() == 3) {
+                return fnIsTriangle(comb);
+            }
+            return 0;
+        }
+        int sl = fnComplSearch(nums, comb, i+1);
+        comb.push_back(nums[i]);
+        int sr = fnComplSearch(nums, comb, i+1);
+        comb.pop_back();
+        return sl + sr;
+    }
+};
