@@ -1,0 +1,21 @@
+class Solution {
+public:
+    vector<vector<int>> listComb;
+    vector<vector<int>> subsets(vector<int>& nums) {
+        vector<int> comb;
+        fnCompleta(nums, 0, comb);
+        return listComb;
+    }
+
+    void fnCompleta(vector<int>& nums, int i, vector<int>& comb){
+        if(i == nums.size()) {
+            listComb.push_back(comb); 
+            return ;
+        }
+        fnCompleta(nums, i+1, comb);
+        comb.push_back(nums[i]);
+
+        fnCompleta(nums, i+1, comb);
+        comb.pop_back();
+    }
+};
