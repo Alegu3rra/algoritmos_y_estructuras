@@ -1,0 +1,22 @@
+class Solution {
+public:
+    int dp[50][50] = {};
+    
+    int minScoreTriangulation(vector<int>& values) {
+        return fnCompleta(values, 0,0,0);
+    }
+
+    int fnCompleta(vector<int>& values, int left = 0, int right = 0, int res = 0) {
+        if (right == 0) right = values.size() - 1;
+
+        if (dp[left][right] != 0) return dp[left][right];
+        
+        for (int mid = left + 1; mid < right; ++mid) {
+            res = min(res == 0 ? INT_MAX : res,
+                fnCompleta(values, left, mid) + 
+                values[left] * values[mid] * values[right] + 
+                fnCompleta(values, mid, right));
+        }
+        return dp[left][right] = res;
+    }
+};
