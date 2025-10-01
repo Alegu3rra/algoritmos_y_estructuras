@@ -1,0 +1,18 @@
+class Solution {
+public:
+    int numWaterBottles(int numBottles, int numExchange) {
+        // naive but ok:
+        int rem = numBottles;
+        int res = numBottles, exchange = 0, drink = 0;
+        while(rem >= numExchange){
+            int drink = rem % numExchange;
+            int exchange = rem/numExchange;
+            rem = drink + exchange;
+            res += exchange;
+        }
+        return  res;
+
+        // optimized:
+        //return numBottles+(numBottles-1)/(numExchange-1);
+    }
+};
