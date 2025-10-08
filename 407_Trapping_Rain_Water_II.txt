@@ -1,0 +1,61 @@
+typedef pair<int, pair<int, int>> phc;
+class Solution {
+public:
+    int neighborhoods[4][2] = {{-1, 0}, {0,-1}, {1,0}, {0,1}};
+    int visited[200][200];
+
+    int trapRainWater(vector<vector<int>>& heightMap) {
+        return BFS(heightMap);
+    }
+
+    bool posibleMove(int n, int m, int i, int j){
+        return i >=0 && i < n && j >=0 && j < m && !visited[i][j];
+    }
+
+    priority_queue<phc, vector<phc>, greater<phc>> fillBoards(vector<vector<int>>& heightMap){
+        int n = heightMap.size();
+        int m = heightMap[0].size();
+        priority_queue<phc, vector<phc>, greater<phc>> minPq;
+        memset(visited, false, sizeof(visited));
+        for(int i = 0; i < n; i++){
+            for(int j = 0; j < m; j++){
+                if(i == 0 || i == n-1 || j == 0 || j == m-1){
+                    visited[i][j] = true;
+                    minPq.push({heightMap[i][j],{i,j}});
+                }
+            }
+        }
+        return minPq;
+    }
+
+    int BFS(vector<vector<int>>& heightMap){
+        auto minPq = fillBoards(heightMap);
+        int sumTraped = 0;
+        int n = heightMap.size();
+        int m = heightMap[0].size();
+        
+        while(!minPq.empty()){
+            auto currentHeight = minPq.top();
+            minPq.pop();
+            int x = currentHeight.second.first;
+            int y = currentHeight.second.second;
+
+            for(int k = 0; k < 4; k++) {
+                int nextx = x + neighborhoods[k][0];
+                int nexty = y + neighborhoods[k][1];
+
+                if(posibleMove(n, m , nextx , nexty)){
+                    visited[nextx][nexty] = true;
+                    if(currentHeight.first > heightMap[nextx][nexty]){
+                        sumTraped += currentHeight.first - heightMap[nextx][nexty];
+                        minPq.push({currentHeight.first,{nextx,nexty}});
+
+                    } else {
+                        minPq.push({heightMap[nextx][nexty],{nextx,nexty}});
+                    }
+                }
+            }
+        }
+        return sumTraped;
+    } 
+};
