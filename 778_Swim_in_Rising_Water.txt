@@ -1,0 +1,52 @@
+class Solution {
+public:
+    int coord[50][50] = {{-1,0},{0,-1},{0,1},{1,0}};
+    bool visited[50][50];
+    int minElevation = INT_MAX;
+    bool isPossible(int n, int i, int j){
+        return i >= 0 && i < n && j >= 0 && j < n && visited[i][j] == false;
+    }
+    bool bfs(vector<vector<int>>& grid, int t){
+        memset(visited, false, sizeof(visited));
+        queue<pair<int, int>> q;
+        q.push({0,0});
+        visited[0][0] = true;
+        int n = grid.size();
+        while(!q.empty()) {
+            pair<int, int> curr = q.front();
+            q.pop();
+            int x = curr.first, y = curr.second;
+            for(int i = 0; i < 4; i++){
+                int nextx = x + coord[i][0];
+                int nexty = y + coord[i][1];
+                if(isPossible(n, nextx, nexty)){
+                    if(grid[nextx][nexty] <= t){
+                        q.push({nextx, nexty});
+                        visited[nextx][nexty] = true;
+                    }
+                }
+            }
+        }
+        return visited[n-1][n-1];
+    }
+    void binarySearch(vector<vector<int>>& grid, int initial){
+        int n = grid.size()*grid.size();
+        int l = initial, r = n-1;
+        while(l <= r){
+            int mid = r + (l-r)/2;
+            if(bfs(grid, mid)){
+                minElevation = min(minElevation, mid);
+                r = mid - 1;
+            } else {
+                l = mid + 1;
+            }
+        }
+        
+    }
+    int swimInWater(vector<vector<int>>& grid) {
+        int initial = grid[0][0];
+        binarySearch(grid, initial);
+        return minElevation;
+    }
+    
+};
