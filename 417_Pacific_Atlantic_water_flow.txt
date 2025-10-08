@@ -1,0 +1,86 @@
+class Solution {
+public:
+    int coord[4][2] = {{-1,0}, {0,-1}, {0,1},{1,0}};
+    bool visited[200][200];
+    bool isPossible(int i,int  j, int n,int  m){
+        return i < n && i >= 0 && j < m && j >= 0 && visited[i][j] != true;
+    }
+    set<pair<int, int>> dfs(vector<vector<int>>& heights, queue<pair<int, int>>& currentQueue, set<pair<int, int>>& resOcean){
+
+        int n = heights.size();
+        int m = heights[0].size();
+
+        while(!currentQueue.empty()){
+            pair<int, int> currHeight = currentQueue.front();
+            currentQueue.pop();
+            int x = currHeight.first;
+            int y = currHeight.second;
+
+            for(int k = 0; k < 4; k++){
+                int nextx = x + coord[k][0];
+                int nexty = y + coord[k][1];
+
+                if(isPossible( nextx, nexty, n, m)){
+                    if(heights[x][y] <= heights[nextx][nexty]){
+                        currentQueue.push({nextx, nexty});
+                        visited[nextx][nexty] = true;
+                        resOcean.insert({nextx, nexty});
+                    }
+                }
+            }
+        }
+        return resOcean;
+    }
+
+    vector<vector<int>> pacificAtlantic(vector<vector<int>>& heights) {
+
+        queue<pair<int, int>> queueP;
+        queue<pair<int, int>> queueA;
+        set<pair<int, int>> coorP;
+        set<pair<int, int>> coorA;
+
+        int n = heights.size();
+        int m = heights[0].size();
+
+        memset(visited, false, sizeof(visited));
+        // pacific fill
+        for(int i = 0; i < n; i++){
+            for(int j = 0; j < m; j++){
+                if(i == 0 || j == 0){
+                    queueP.push({i,j});
+                    visited[i][j] = true;
+                    coorP.insert({i,j});
+                }
+            }
+        }
+        set<pair<int, int>> resP = dfs(heights, queueP, coorP);
+
+        memset(visited, false, sizeof(visited));
+        // Atlantic fill
+        for(int i = 0; i < n; i++){
+            for(int j = 0; j < m; j++){
+                if(i == n-1 || j == m-1){
+                    queueA.push({i,j});
+                    visited[i][j] = true;
+                    coorA.insert({i,j});
+                }
+            }
+        }
+        set<pair<int, int>> resA = dfs(heights, queueA, coorA);
+       
+
+       
+        set<pair<int,int>> interseccion;
+
+        set_intersection(resP.begin(), resP.end(),
+                     resA.begin(), resA.end(),
+                     inserter(interseccion, interseccion.begin()));
+
+        vector<vector<int>> island;
+        for( auto item : interseccion){
+            island.push_back({item.first, item.second});
+        }
+        return island;
+    }
+
+};
