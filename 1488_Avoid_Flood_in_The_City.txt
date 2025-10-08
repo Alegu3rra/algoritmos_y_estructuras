@@ -1,0 +1,33 @@
+class Solution {
+public:
+    vector<int> avoidFlood(vector<int>& rains) {
+        unordered_set<int> vlakes;          
+        vector<int> vresult(rains.size());  
+        set<int> dryDays;                    
+        map<int,int> lastFillDay; 
+        for(int i = 0; i < rains.size(); i++){
+            int lake = rains[i];
+            if(lake != 0){
+                if(vlakes.count(lake)){
+                    auto it = dryDays.lower_bound(lastFillDay[lake]);
+                    if(it == dryDays.end()){
+                        return {};
+                    }
+                    int dryday = *it;
+                    dryDays.erase(it);      
+                    vresult[dryday] = lake;
+                }
+                vlakes.insert(lake);
+                lastFillDay[lake] = i;
+                vresult[i] = -1;
+            } else {
+                dryDays.insert(i);
+                vresult[i] = 1;
+            }
+        }
+        for(auto &item : vresult){
+            if(item == 0) item = 1;
+        }
+        return vresult;
+    }
+};
