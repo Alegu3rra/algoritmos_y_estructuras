@@ -1,0 +1,32 @@
+class Solution {
+public:
+    vector<int> successfulPairs(vector<int>& spells, vector<int>& potions, long long success) {
+        vector<int> res;
+
+        sort(potions.begin(), potions.end());
+
+        for(int i = 0; i < spells.size(); i++) {
+            res.push_back(binarySearch(spells[i], potions, success));
+        }
+        return res;
+    }
+
+    int binarySearch(long long spell, vector<int>& potions, long long success){
+        
+        int left = 0;
+        int right = potions.size()-1;
+
+        int minSuccess = INT_MAX;
+
+        while(left <= right) {
+            int mid = left + (right - left)/2;
+            if(potions[mid] * spell >= success){
+                minSuccess = min(minSuccess, mid);
+                right = mid - 1;
+            } else {
+                left = mid + 1;
+            }
+        }
+        return minSuccess == INT_MAX ? 0 : potions.size() - minSuccess;
+    }
+};
