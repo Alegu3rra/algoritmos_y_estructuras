@@ -1,0 +1,23 @@
+class Solution {
+public:
+    vector<string> removeAnagrams(vector<string>& words) {
+        vector<string> resSorted;
+        vector<string> res;
+
+        string currentWord = words[0];
+        res.push_back(currentWord);
+
+        sort(currentWord.begin(), currentWord.end());
+        resSorted.push_back(currentWord);
+
+        for(int i = 1; i < words.size(); i++){
+            currentWord = words[i];
+            sort(currentWord.begin(), currentWord.end());
+            if(currentWord != resSorted.back()){
+                res.push_back(words[i]);
+                resSorted.push_back(currentWord);
+            }
+        }
+        return res;
+    }
+};
