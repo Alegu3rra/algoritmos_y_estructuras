@@ -1,0 +1,53 @@
+class Solution {
+public:
+    vector<pair<int,int>> list_powers;
+    unordered_map<long long, long long> memo;
+    void clean(vector<int>& power){
+        map<int, int> aparitions;
+        for(int i = 0; i < power.size(); i++){
+            aparitions[power[i]]++;
+        }
+        for(auto a: aparitions){
+            list_powers.push_back({a.first, a.second});
+        }
+    }
+    long long complete(int pos, long long value){
+        if(pos == list_powers.size())
+            return 0;
+        long long key = ((long long)pos << 32) ^ (value & 0xffffffff);
+        if(memo.find(key) != memo.end())
+            return memo[key];
+        long long take = 0, skip = 0;
+        if(abs(value - list_powers[pos].first) > 2){
+            take = list_powers[pos].first * list_powers[pos].second + complete(pos + 1, list_powers[pos].first);
+        }
+
+        skip = complete(pos + 1, value);
+
+        return memo[key] = max(take, skip);
+    }
+
+    long long maximumTotalDamage(vector<int>& power) {
+        map<long long, long long> freq;
+    for (int x : power) freq[x]++;
+
+    vector<long long> vals, cnts;
+    for (auto& [v,c] : freq) {
+        vals.push_back(v);
+        cnts.push_back(c);
+    }
+
+    int n = vals.size();
+    vector<long long> dp(n, 0);
+
+    for (int i = 0; i < n; i++) {
+        long long take = (long long)vals[i] * cnts[i];
+        int j = i - 1;
+        // buscar el último valor que cumpla la restricción |vals[i]-vals[j]|>2
+        while (j >= 0 && vals[i] - vals[j] <= 2) j--;
+        if (j >= 0) take += dp[j];
+        dp[i] = max(take, i>0 ? dp[i-1] : 0);
+    }
+    return dp[n-1];
+    }
+};
